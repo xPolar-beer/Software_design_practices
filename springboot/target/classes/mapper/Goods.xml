@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.mapper.GoodsMapper">
+
+    <!--    通过物品名称来搜索库存物资-->
+    <select id="listByCondition" resultType="com.example.springboot.entity.Goods">
+        select * from goods
+        <where>
+            <if test="goodsname != null and goodsname != ''">
+                goodsname like concat('%', #{goodsname}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="listGoodsName" resultType="String">
+        select goodsname from goods
+    </select>
+
+    <insert id="save">
+        insert into goods(goodsname, number, lasttime, username, style)
+        values(#{goodsname}, #{number}, #{lasttime}, #{username}, #{style})
+    </insert>
+
+
+    <delete id="deleteById">
+        delete from goods where id = #{id}
+    </delete>
+
+    <update id="updateById">
+        update goods set goodsname = #{goodsname}, number = #{number}, lasttime = #{lasttime}, username = #{username}, style = #{style} where id = #{id}
+    </update>
+
+</mapper>

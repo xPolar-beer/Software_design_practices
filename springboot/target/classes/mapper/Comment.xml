@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.mapper.CommentMapper">
+    <insert id="savecomment">
+        insert into comment(content, roomid, createtime, userid, commentid, role, avatar, username, greatnum)
+        values(#{content}, #{roomid}, #{createtime}, #{userid}, 0, 0, #{avatar}, #{username}, 0)
+    </insert>
+
+    <insert id="savereply">
+        insert into comment(content, roomid, createtime, userid, commentid, role, avatar, username, greatnum)
+        values(#{content}, #{roomid}, #{createtime}, #{userid}, #{commentid}, 1, #{username}, 0)
+    </insert>
+
+    <delete id="deleteById">
+        delete from comment
+        where id = #{id}
+    </delete>
+
+    <select id="listbyroomid" resultType="com.example.springboot.entity.Comment">
+        select * from comment where roomid = #{roomid} and role = 0
+    </select>
+
+    <select id="listbycommentid" resultType="com.example.springboot.entity.Comment">
+        select * from comment where commentid = #{commentid} and role = 1
+    </select>
+
+    <select id="listbyuserid" resultType="com.example.springboot.entity.Comment">
+        select * from comment where userid = #{userid}
+    </select>
+
+    <update id="updategreatnum">
+        update comment set greatnum = greatnum + 1 where id = #{id}
+    </update>
+
+    <select id="listByCondition" resultType="com.example.springboot.entity.Comment">
+        select * from comment
+        <where>
+            <if test="createtime != null and createtime != ''">
+                createtime like concat('%', #{createtime}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="userlistByCondition" resultType="com.example.springboot.entity.Comment">
+        select * from comment
+        <where>
+            <if test="createtime != null and createtime != ''">
+                createtime like concat('%', #{createtime}, '%')
+            </if>
+            and userid = #{userid}
+        </where>
+    </select>
+</mapper>

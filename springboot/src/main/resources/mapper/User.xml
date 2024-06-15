@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.mapper.UserMapper">
+
+    <insert id="save">
+        insert into users(name, username, sex, phone, createtime, birthday, password, avatar, role, money, state)
+        values(#{name}, #{username}, #{sex}, #{phone}, #{createtime}, #{birthday}, #{password}, #{avatar}, 1, 0.0, 0)
+    </insert>
+
+    <update id="updateById">
+        update users set name = #{name}, phone = #{phone}, username = #{username}, createtime = #{createtime}, sex = #{sex}, birthday = #{birthday}, avatar = #{avatar}, role = #{role} where id = #{id}
+    </update>
+
+    <update id="updatestateById">
+        update users set state = #{state} where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from users where id = #{id} and role = 1
+    </delete>
+
+    <select id="list" resultType="com.example.springboot.entity.User">
+        select * from users where role = 1
+    </select>
+
+    <select id="listByCondition" resultType="com.example.springboot.entity.User">
+        select * from users
+            <where>
+                <if test="name != null and name != ''">
+                    name like concat('%', #{ name }, '%')
+                </if>
+                <if test="phone != null and phone != ''">
+                    and phone like concat('%', #{ phone }, '%')
+                </if>
+                and role = 1
+            </where>
+    </select>
+
+    <select id="getById" resultType="com.example.springboot.entity.User">
+        select * from users where id = #{id} and role = 1
+    </select>
+
+    <select id="getByPhoneAndPassword" resultType="com.example.springboot.entity.User">
+        select * from users where phone = #{phone} and password = #{password} and role = 1
+    </select>
+
+    <select id="getByIdAndOldpass" resultType="com.example.springboot.entity.User">
+        select * from users where id = #{id} and password = #{oldpass} and role = 1
+    </select>
+
+    <update id="updatemoney">
+        update users set money = #{money} where id = #{id}
+    </update>
+
+    <update id="updatemoneyByMoney">
+        update users set money = money + #{money} where id = #{id}
+    </update>
+
+    <update id="updatePassword">
+        update users set password = #{pass} where id = #{id}
+    </update>
+</mapper>

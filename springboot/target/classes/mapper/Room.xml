@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.mapper.RoomMapper">
+
+<!--    //通过房号或者房间类型来定位房间-->
+    <select id="listByCondition1" resultType="com.example.springboot.entity.Room">
+        select * from room
+        <where>
+            <if test="roomnumber != null and roomnumber != ''">
+                roomnumber like concat('%', #{roomnumber}, '%')
+            </if>
+            <if test="style != null and style != ''">
+                and style like concat('%', #{style}, '%')
+            </if>
+            and state = 0
+        </where>
+    </select>
+
+    <select id="listByCondition2" resultType="com.example.springboot.entity.Room">
+        select * from room
+        <where>
+            <if test="roomnumber != null and roomnumber != ''">
+                roomnumber like concat('%', #{roomnumber}, '%')
+            </if>
+            <if test="style != null and style != ''">
+                and style like concat('%', #{style}, '%')
+            </if>
+            and state = 1
+        </where>
+    </select>
+
+    <select id="listByCondition3" resultType="com.example.springboot.entity.Room">
+        select * from room
+        <where>
+            <if test="roomnumber != null and roomnumber != ''">
+                roomnumber like concat('%', #{roomnumber}, '%')
+            </if>
+            <if test="style != null and style != ''">
+                and style like concat('%', #{style}, '%')
+            </if>
+            and state = 2
+        </where>
+    </select>
+
+    <select id="listByCondition4" resultType="com.example.springboot.entity.Room">
+        select * from room
+        <where>
+            <if test="roomnumber != null and roomnumber != ''">
+                roomnumber like concat('%', #{roomnumber}, '%')
+            </if>
+            <if test="style != null and style != ''">
+                and style like concat('%', #{style}, '%')
+            </if>
+            and state = 3
+        </where>
+    </select>
+
+    <select id="getRoomsByStyle" resultType="String">
+        select roomnumber from room where style = (select style from roomstyle where id = #{id}) and state = 0 and up = 0
+    </select>
+
+    <select id="getRoomNumberByUserId" resultType="String">
+        select roomnumber from room where userid = #{id}
+    </select>
+
+    <update id="updateByUserNameAndPhone">
+        update room set userid = (select id from users where name = #{name} and phone = #{phone}), state = 1, intime = #{intime}, day = #{day}, user = #{name} where id = #{id}
+    </update>
+
+    <update id="updateByUserIdToNot">
+        update room set userid = null, ordernumber = null, state = 2, lastuser = #{user}, user = null where id = #{id}
+    </update>
+
+    <update id="updateByUserIdToYes">
+        update room set userid = null, state = 0, user = null where id = #{id}
+    </update>
+
+    <update id="updateByRoomIdNotUp">
+        update room set state = 1, up = 0, intime = #{intime}, day = #{day}, user = (select name from users where id = #{userid}) where id = #{id}
+    </update>
+
+    <update id="updateByIdToNotUse">
+        update room set state = 3, up = 0 where userid = #{userid}
+    </update>
+
+    <update id="updateByUserIdToUp">
+        update room set userid = #{userid}, state = 0, up = 1 where roomnumber = #{roomnumber}
+    </update>
+
+
+    <update id="updateByUserIdToOrdernumber">
+        update room set ordernumber = #{ordernumber} where roomnumber = #{roomnumber}
+    </update>
+
+</mapper>

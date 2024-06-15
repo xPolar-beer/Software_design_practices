@@ -1,0 +1,19 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #eeeeee;
+}
+
+.center{
+    text-align: center;
+}
+
+.login_imgSrc{
+    background-image: url("D:\homework\vue\src\assets\login_background.jpg");
+    width: 100%;
+    height: 100%;
+    position:fixed;
+    background-size:100% 100%;
+
+}
+

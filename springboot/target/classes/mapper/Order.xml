@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.mapper.OrderMapper">
+
+<!--    //通过订单编号或者预订日期定位订单-->
+    <select id="listByCondition" resultType="com.example.springboot.entity.Order">
+        select * from orders
+        <where>
+            <if test="number != null and number != ''">
+                number like concat('%', #{number}, '%')
+            </if>
+            <if test="reservetime != null and reservetime != ''">
+                and reservetime like concat('%', #{reservetime}, '%')
+            </if>
+        </where>
+    </select>
+
+<!--    //通过用户id和搜索条件获取用户的订单-->
+    <select id="userlistByCondition" resultType="com.example.springboot.entity.Order">
+        select * from orders
+        <where>
+            <if test="number != null and number != ''">
+                number like concat('%', #{number}, '%')
+            </if>
+            <if test="reservetime != null and reservetime != ''">
+                and reservetime like concat('%', #{reservetime}, '%')
+            </if>
+            and userid = #{userid}
+        </where>
+    </select>
+
+<!--    //新添订单-->
+     <insert id="save">
+         insert into orders(userid, number, roomnumber, style, state, money, establishtime, reservetime, day)
+         values(#{userid}, #{number}, #{roomnumber}, #{style}, 0, #{money}, #{establishtime}, #{reservetime}, #{day})
+     </insert>
+
+<!--    //通过id来访问具体的管理员信息-->
+    <select id="getById" resultType="com.example.springboot.entity.Order">
+        select * from orders where id = #{id}
+    </select>
+
+<!--    //更新修改完后的信息-->
+    <update id="updateById">
+        update orders set state = 1 where id = #{id}
+    </update>
+
+    <update id="updateByOrdernumber">
+        update orders set state = 1 where number = #{number}
+    </update>
+
+    <select id="findDayByOrderNumber" resultType="java.lang.Object">
+        select day from orders where number = #{number}
+    </select>
+
+    <select id="getCountByTimeRange2" resultType="com.example.springboot.mapper.po.OrderCount">
+        select count(id) as count, DATE_FORMAT(reservetime,'%Y-%m-%d') as date from orders
+        where style = '双人间' and
+        <choose>
+            <when test="timeRange == 'week'">
+                DATE_SUB(NOW(),INTERVAL -1 WEEK) >= reservetime
+            </when>
+            <when test="timeRange == 'month1'">
+                DATE_SUB(NOW(),INTERVAL -1 MONTH) >= reservetime
+            </when>
+            <when test="timeRange == 'month2'">
+                DATE_SUB(NOW(),INTERVAL -2 MONTH) >= reservetime
+            </when>
+            <when test="timeRange == 'month3'">
+                DATE_SUB(NOW(),INTERVAL -3 MONTH) >= reservetime
+            </when>
+            <otherwise>
+                now() > reservetime
+            </otherwise>
+        </choose>
+        group by date
+    </select>
+
+    <select id="getCountByTimeRange1" resultType="com.example.springboot.mapper.po.OrderCount">
+        select count(id) as count, DATE_FORMAT(reservetime,'%Y-%m-%d') as date from orders
+        where
+        <choose>
+            <when test="timeRange == 'week'">
+                DATE_SUB(NOW(),INTERVAL -1 WEEK) >= reservetime
+            </when>
+            <when test="timeRange == 'month1'">
+                DATE_SUB(NOW(),INTERVAL -1 MONTH) >= reservetime
+            </when>
+            <when test="timeRange == 'month2'">
+                DATE_SUB(NOW(),INTERVAL -2 MONTH) >= reservetime
+            </when>
+            <when test="timeRange == 'month3'">
+                DATE_SUB(NOW(),INTERVAL -3 MONTH) >= reservetime
+            </when>
+            <otherwise>
+                now() > reservetime
+            </otherwise>
+        </choose>
+        and style = '单人间'
+        group by date
+    </select>
+
+    <select id="getCountByTimeRange3" resultType="com.example.springboot.mapper.po.MoneyCount">
+        select sum(money) as count, DATE_FORMAT(reservetime,'%Y-%m-%d') as date from orders
+        where
+        <choose>
+            <when test="timeRange == 'week'">
+                reservetime >= DATE_SUB(NOW(),INTERVAL 1 WEEK)
+            </when>
+            <when test="timeRange == 'month1'">
+                reservetime >= DATE_SUB(NOW(),INTERVAL 1 MONTH)
+            </when>
+            <when test="timeRange == 'month2'">
+                reservetime >= DATE_SUB(NOW(),INTERVAL 2 MONTH)
+            </when>
+            <when test="timeRange == 'month3'">
+                reservetime >= DATE_SUB(NOW(),INTERVAL 3 MONTH)
+            </when>
+            <otherwise>
+                reservetime > now()
+            </otherwise>
+        </choose>
+        group by date
+    </select>
+
+</mapper>

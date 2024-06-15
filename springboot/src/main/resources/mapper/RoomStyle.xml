@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.mapper.RoomStyleMapper">
+
+<!--    //通过房号或者房间类型来定位房间-->
+    <select id="listByCondition" resultType="com.example.springboot.entity.RoomStyle">
+        select * from roomstyle
+        <where>
+            <if test="style != null and style != ''">
+                and style like concat('%', #{style}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" resultType="com.example.springboot.entity.RoomStyle">
+        select * from roomstyle where id = #{id}
+    </select>
+
+    <update id="great">
+        update roomstyle set greatnum = greatnum + 1 where id = #{id}
+    </update>
+
+    <update id="updateById">
+        update roomstyle set avatar = #{avatar}, price = #{price}, describes = #{describes} where id = #{id}
+    </update>
+
+
+    <update id="updatenumber">
+        update roomstyle as a set number = (select count(b.id) from room as b where b.style = #{style} and b.state = 0 and b.up = 0)
+    </update>
+
+</mapper>

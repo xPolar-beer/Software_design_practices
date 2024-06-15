@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.mapper.InfoMapper">
+
+    <!--    通过住户名字和电话来搜索用户需求-->
+    <select id="listByCondition" resultType="com.example.springboot.entity.Info">
+        select * from info
+        <where>
+            <if test="user != null and user != ''">
+                user like concat('%', #{user}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone like concat('%', #{ phone }, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="listByUserId" resultType="com.example.springboot.entity.Info">
+        select * from info where userid = #{userid}
+    </select>
+
+
+    <insert id="save">
+        insert into info(user, phone, str, time, state, roomnumber, userid)
+        values(#{user}, #{phone}, #{str}, #{time}, 0, #{roomnumber}, #{userid})
+    </insert>
+
+    <delete id="deleteById">
+        delete from info where id = #{id}
+    </delete>
+
+    <update id="updateById">
+        update info set state = 1 where id = #{id}
+    </update>
+
+</mapper>

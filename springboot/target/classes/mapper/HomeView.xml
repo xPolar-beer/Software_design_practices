@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.mapper.HomeViewMapper">
+
+<!--    //通过房号或者房间类型来定位房间-->
+    <select id="list" resultType="com.example.springboot.entity.HomeView">
+        select * from homeview
+    </select>
+
+    <select id="getById" resultType="com.example.springboot.entity.HomeView">
+        select * from homeview where id = #{id}
+    </select>
+
+    <update id="updateById">
+        update homeview set image = #{image} where id = #{id}
+    </update>
+
+</mapper>
